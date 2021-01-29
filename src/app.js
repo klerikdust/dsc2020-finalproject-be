@@ -1,11 +1,14 @@
 const bodyParser = require(`body-parser`)
 const express = require(`express`)
+const router = require(`./routes/province.routes`)
+const hpp = require(`hpp`)
 module.exports = () => {
     const app = express()
-    //  Middlewares.
     app.use(bodyParser.json())
     app.use(express.urlencoded({ extended: true }))
-    app.use((req, res, next) => {
+	app.disable(`x-powered-by`)
+	app.use(hpp())
+	app.use((req, res, next) => {
         const key = req.headers[`x-api-key`]
         //  If x-api-key doesn't match, then return.
         if (key !== `DSC2020BACKEND`) {
@@ -18,9 +21,7 @@ module.exports = () => {
         console.debug(`Access from ${key} has been authorized.`)
         next()
     })
-    //  Prepare routers.
-    require(`./routes/province.routes`)(app)
-    //  Listening to port.
-    const port = 3000
+    app.use(`/`, router)
+	const port = 3000
     app.listen(port, console.debug(`Server currently listening on port ${port}.`))
 }
