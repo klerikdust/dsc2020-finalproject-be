@@ -20,11 +20,11 @@ const connection = mysql.createConnection({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME
 });
-connection.connect(error => {
-  if (error) {
-        console.error(`Oops, something happened during db connect and now instance will be terminated. > ${err.stack}`)
-  		process.exit(0)
-  }
-  console.debug("Connected to DB.")
+connection.connect(err => {
+	if (err) {
+		console.error(`Oops, something happened during db connect and now instance will be terminated. > ${err.stack}`)
+		process.exit(0)
+	}
+	console.debug("Connected to DB.")
 })
 module.exports = connection
