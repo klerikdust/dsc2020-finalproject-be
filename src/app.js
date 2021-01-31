@@ -35,6 +35,6 @@ module.exports = () => {
 			message: `Invalid endpoint.`
 		})
 	})
-	const port = 3000
-    app.listen(port, console.debug(`Server currently listening on port ${port}.`))
+    const port = process.env.PORT || 3000
+	app.listen(port, console.debug(`Server currently listening on port ${port}.`))
 }
