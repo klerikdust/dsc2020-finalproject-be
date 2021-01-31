@@ -89,7 +89,7 @@ module.exports = {
 	 * ------------------------------
 	 */
 	update: (req, res) => {
-		const { id, name, recovered, death, positive } = req.body
+		let { id, name, recovered, death, positive } = req.body
 		//  Handle if there are empty request's body parameters
 		const bodyTypes = [id, name, recovered, death, positive].map(v => typeof v)
 		if (bodyTypes.includes(undefined)) {
