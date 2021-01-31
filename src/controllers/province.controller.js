@@ -40,14 +40,27 @@ module.exports = {
 	 * ------------------------------
 	 */
 	insert: (req, res) => {
-		const { name, recovered, death, positive } = req.body
+		let { name, recovered, death, positive } = req.body
 		//  Handle if there are empty request's body parameters
-		if (!name || !recovered || !death || !positive) {
+		const bodyTypes = [name, recovered, death, positive].map(v => typeof v)
+		if (bodyTypes.includes(undefined)) {
 			return res.status(400).send({
 				status: false,
 				message: `Incomplete required body.`
 			})
 		}
+		//  Handle if statistic values were decimals.
+		const integerStatisticValues = [recovered, death, positive].map(v => /^-?[0-9]+(e[0-9]+)?$/.test(v))
+		if (integerStatisticValues.includes(false)) {
+			return res.status(400).send({
+				status: false,
+				message: `Values type for statistical data must be integer.`
+			})
+		}
+		//  Sanitize statistic values
+		recovered = parseInt(recovered)
+		death = parseInt(death)
+		positive = parseInt(positive)
 		const src = new Province()
 		src.insertNewProvince(req.body, (err, data) => {
 			if (err) {
@@ -62,9 +75,9 @@ module.exports = {
 				message: `Storing data success.`,
 				stored: {
 					name: name,
-					recovered: parseInt(recovered),
-					death: parseInt(death),
-					positive: parseInt(positive)
+					recovered: recovered,
+					death: death,
+					positive: positive
 				}
 			})
 		})
@@ -77,13 +90,26 @@ module.exports = {
 	 */
 	update: (req, res) => {
 		const { id, name, recovered, death, positive } = req.body
-		//  Handle if one of these parameters aren't present 
-		if (!id || !name || !recovered || !death || !positive) {
+		//  Handle if there are empty request's body parameters
+		const bodyTypes = [id, name, recovered, death, positive].map(v => typeof v)
+		if (bodyTypes.includes(undefined)) {
 			return res.status(400).send({
 				status: false,
-				message: `Incomplete required body.`	
+				message: `Incomplete required body.`
 			})
 		}
+		//  Handle if statistic values were decimals.
+		const integerStatisticValues = [recovered, death, positive].map(v => /^-?[0-9]+(e[0-9]+)?$/.test(v))
+		if (integerStatisticValues.includes(false)) {
+			return res.status(400).send({
+				status: false,
+				message: `Values type for statistical data must be integer.`
+			})
+		}
+		//  Sanitize statistic values
+		recovered = parseInt(recovered)
+		death = parseInt(death)
+		positive = parseInt(positive)
 		const src = new Province()
 		src.isProvinceIdExist(id, (err, isExist) => {
 			if (err) {
