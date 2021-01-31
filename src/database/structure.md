@@ -3,11 +3,11 @@
 
 ```sql
 CREATE TABLE `provinces` (
+ `id` int(32) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+
  `registered_at` datetime NOT NULL DEFAULT current_timestamp(),
  
  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-   
- `id` int(32) NOT NULL AUTO_INCREMENT,
   
  `name` varchar(64) NOT NULL,
  
@@ -17,8 +17,6 @@ CREATE TABLE `provinces` (
  
  `positive` bigint(20) NOT NULL DEFAULT 0,
  
- `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
-		 
- PRIMARY KEY (`id`)
+ `deleted_at` datetime DEFAULT NULL
 )
 ```
