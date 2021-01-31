@@ -49,6 +49,13 @@ module.exports = {
 				message: `Incomplete required body.`
 			})
 		}
+		//  Handle if provided name was empty
+		if (name.length < 1) {
+			return res.status(400).send({
+				status: false,
+				message: `The 'name' value is too short.`
+			})
+		}
 		//  Handle if statistic values were decimals.
 		const integerStatisticValues = [recovered, death, positive].map(v => /^-?[0-9]+(e[0-9]+)?$/.test(v))
 		if (integerStatisticValues.includes(false)) {
@@ -104,6 +111,13 @@ module.exports = {
 			return res.status(400).send({
 				status: false,
 				message: `Incomplete required body.`
+			})
+		}
+		//  Handle if provided name was empty
+		if (name.length < 1) {
+			return res.status(400).send({
+				status: false,
+				message: `The 'name' value is too short.`
 			})
 		}
 		//  Handle if statistic values were decimals.

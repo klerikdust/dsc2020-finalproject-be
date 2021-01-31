@@ -50,7 +50,7 @@ class Province {
 			.from(`provinces`)	
 			.where(`id`, id)
 			.whereNull(`deleted_at`)
-			.then(data => res(null, res))
+			.then(data => res(null, data[0]))
 			.catch(err => res(err, null))	
 	}
 
@@ -97,10 +97,10 @@ class Province {
 	 */
 	isProvinceIdExist(id, res) {
 		return db(`provinces`)
-			.count(`id`)
+			.count(`id AS data`)
 			.where(`id`, id)
 			.whereNull(`deleted_at`)
-			.then(total => res(null, total[0].id > 0 ? true : false))
+			.then(total => res(null, total[0].data > 0 ? true : false))
 			.catch(err => res(err, null))
 	}
 }
