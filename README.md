@@ -2,7 +2,7 @@
 A CRUD-based application programming interface. This project was purposely made as the requirement of DSC Binus Backend Final Project 2020.
 ___
 ## How to install?
-1.  Clone to repo
+1.  Clone the repository.
 2.  Make sure you've installed nodejs `v12.x.x` or above.
 3.  Create a new `.env` file in the root directory and fill it with template below as reference.
 ```env
