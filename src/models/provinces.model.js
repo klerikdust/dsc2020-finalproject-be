@@ -1,8 +1,7 @@
 const db = require(`../database/client`)
 /**
  * Province Models.
- * The method used for the query is `.execute()`, because it contains anti SQL-Injection pattern in it.
- * for the documentation reference, head to <https://www.npmjs.com/package/mysql2#using-prepared-statements>
+ * Supported by knex interfaces.
  * @author {Nabil} 
  * @constructor
  */
@@ -13,13 +12,12 @@ class Province {
      * @return {object}
      */
     getAllProvinces(res) {
-        return db.execute(`
-			SELECT * 
-			FROM provinces
-			WHERE is_deleted = 0`, (err, data) => {
-            if (err) return res(err, null)
-            return res(null, data)
-        })
+        return db
+			.select(`*`)
+			.from(`provinces`)
+			.where(`deleted_at`, null)
+			.then(data => res(null, data))
+			.catch(err => res(err, null))
     }
 
 	/**
@@ -29,11 +27,15 @@ class Province {
 	 * @return {object|null}
 	 */
 	insertNewProvince(provinceData, res) {
-		return db.execute(`INSERT INTO provinces(name, recovered, death, positive) VALUES(?, ?, ?, ?)`,
-		[provinceData.name, provinceData.recovered, provinceData.death, provinceData.positive], err => {
-			if (err) return res(err)
-			return res(null)
-		})
+		return db(`provinces`)
+			.insert({
+				name: provinceData.name,
+				recovered: provinceData.recovered,
+				death: provinceData.death,
+				positive: provinceData.positive
+			})
+			.then(data => res(null))
+			.catch(err => res(err))
 	}
 
 	/**
@@ -43,15 +45,13 @@ class Province {
 	 * @return {object}
 	 */
 	getProvince(id, res) {
-		return db.execute(`
-			SELECT name, recovered, death, positive 
-			FROM provinces 
-			WHERE 
-				id = ?
-				AND is_deleted = 0`, [id], (err, data) => {
-			if (err) return res(err, null)
-			return res(null, data[0])	
-		})
+		return db
+			.select(`name`, `recovered`, `death`, `positive`)
+			.from(`provinces`)	
+			.where(`id`, id)
+			.whereNull(`deleted_at`)
+			.then(data => res(null, res))
+			.catch(err => res(err, null))	
 	}
 
 	/**
@@ -61,18 +61,17 @@ class Province {
 	 * @return {object}
 	 */
 	updateProvince(provinceData, res) {
-		return db.execute(`
-			UPDATE provinces 
-			SET
-				updated_at = now(), 
-				name = ?,
-				recovered = ?,
-				death = ?,
-				positive = ? 
-			WHERE id = ?`, [provinceData.name, provinceData.recovered, provinceData.death, provinceData.positive, provinceData.id], (err) => {
-			if (err) return res(err, null)
-			return res(null, provinceData)
-		}) 
+		return db(`provinces`)
+			.where(`id`, provinceData.id)
+			.update({
+				updated_at: db.fn.now(),
+				name: provinceData.name,
+				recovered: provinceData.recovered,
+				death: provinceData.death,
+				positive: provinceData.positive
+			})
+			.then(() => res(null, provinceData))
+			.catch(err => res(err, null))
 	}
 
 	/**
@@ -82,15 +81,12 @@ class Province {
 	 * @return {object}
 	 */
 	softDeleteProvince(provinceId, res) {
-		return db.execute(`
-			UPDATE provinces
-			SET is_deleted = 1
-			WHERE 
-				id = ?
-				AND is_deleted = 0`, [provinceId], (err, data) => {
-			if (err) return res(err, null)
-			return res(null, data)
-		})
+		return db(`provinces`)
+			.where(`id`, provinceId)
+			.whereNull(`deleted_at`)
+			.update(`deleted_at`, db.fn.now())
+			.then(data => res(null, data))
+			.catch(err => res(err, null))
 	}
 
 	/**
@@ -100,15 +96,12 @@ class Province {
 	 * @return {boolean}
 	 */
 	isProvinceIdExist(id, res) {
-		return db.execute(`
-			SELECT COUNT(*) AS count 
-			FROM provinces 
-			WHERE 
-				id = ?
-				AND is_deleted = 0`, [id], (err, data) => {
-			if (err) return res(err, null)
-			return res(null, data[0].count > 0 ? true : false)
-		})
+		return db(`provinces`)
+			.count(`id`)
+			.where(`id`, id)
+			.whereNull(`deleted_at`)
+			.then(total => res(null, total[0].id > 0 ? true : false))
+			.catch(err => res(err, null))
 	}
 }
 module.exports = Province
