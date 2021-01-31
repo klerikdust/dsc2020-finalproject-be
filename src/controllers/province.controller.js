@@ -61,6 +61,14 @@ module.exports = {
 		recovered = parseInt(recovered)
 		death = parseInt(death)
 		positive = parseInt(positive)
+		//  Handle if statistic values were below zero.
+		const negativeStatisticValues = [recovered, death, positive].filter(v => v < 0)
+		if (negativeStatisticValues.length > 0) {
+			return res.status(400).send({
+				status: false,
+				message: `Values type for statistical data must be equal or above zero.`
+			})
+		}
 		const src = new Province()
 		src.insertNewProvince(req.body, (err, data) => {
 			if (err) {
@@ -110,6 +118,14 @@ module.exports = {
 		recovered = parseInt(recovered)
 		death = parseInt(death)
 		positive = parseInt(positive)
+		//  Handle if statistic values were below zero.
+		const negativeStatisticValues = [recovered, death, positive].filter(v => v < 0)
+		if (negativeStatisticValues.length > 0) {
+			return res.status(400).send({
+				status: false,
+				message: `Values type for statistical data must be equal or above zero.`
+			})
+		}
 		const src = new Province()
 		src.isProvinceIdExist(id, (err, isExist) => {
 			if (err) {
