@@ -12,22 +12,19 @@ module.exports = () => {
         const key = req.headers[`x-api-key`]
 		//  Handle if x-api-key wasn't provided.
 		if (key === undefined) {
-			console.debug(`Empty x-api-key.`)
 			return res.status(400).send({
 				stauts: false,
 				message: `Missing x-api-key`
 			})
 		}
 		//  If x-api-key doesn't match, then return.
-        if (key !== `DSC2020BACKEND`) {
-            console.debug(`Unknown ${key} key has been rejected.`)
+        if (key !== process.env.API_KEY) {
             return res.status(403).send({
                 status: false,
 				message: `Unauthorized x-api-key. Please use the correct token that has been provided by DSC Binus Kemanggisan.`
             })
         }
         //  Else, proceed to province routers.
-        console.debug(`Access from ${key} has been authorized.`)
         next()
     })
     app.use(`/`, router)
