@@ -43,7 +43,7 @@ module.exports = {
 		let { name, recovered, death, positive } = req.body
 		//  Handle if there are empty request's body parameters
 		const bodyTypes = [name, recovered, death, positive].map(v => typeof v)
-		if (bodyTypes.includes(undefined)) {
+		if (bodyTypes.includes(`undefined`)) {
 			return res.status(400).send({
 				status: false,
 				message: `Incomplete required body.`
@@ -100,7 +100,7 @@ module.exports = {
 		let { id, name, recovered, death, positive } = req.body
 		//  Handle if there are empty request's body parameters
 		const bodyTypes = [id, name, recovered, death, positive].map(v => typeof v)
-		if (bodyTypes.includes(undefined)) {
+		if (bodyTypes.includes(`undefined`)) {
 			return res.status(400).send({
 				status: false,
 				message: `Incomplete required body.`
