@@ -31,6 +31,13 @@ module.exports = () => {
         next()
     })
     app.use(`/`, router)
+	//  Handle invalid endpoints
+	app.use((req, res) => {
+		return res.status(404).send({
+			status: false,
+			message: `Invalid endpoint.`
+		})
+	})
 	const port = 3000
     app.listen(port, console.debug(`Server currently listening on port ${port}.`))
 }
